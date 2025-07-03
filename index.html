@@ -1,0 +1,2734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Agentes de IA y Frameworks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Nunito:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --main-bg: linear-gradient(135deg, #f0f8ff, #e8f5e8, #fff8f0);
+      --main-card: #fff;
+      --main-dark: #1b7b83;
+      --main-light: #e3f2fd;
+      --main-text: #223366;
+      --main-muted: #7b8794;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --error: #f44336;
+      --amazon-orange: #ff9900;
+      --amazon-blue: #232f3e;
+      --party-gradient: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+      --party-gradient-2: linear-gradient(45deg, #ff9a9e, #fecfef, #fecfef, #fecfef);
+      --neon-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --rainbow-gradient: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body { 
+      margin: 0; 
+      font-family: 'Nunito', 'Segoe UI', Arial, sans-serif; 
+      background: var(--main-bg); 
+      color: var(--main-text);
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    header { 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); 
+      color: #fff; 
+      padding: 40px 0; 
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(102,126,234,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.3;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 3em;
+      font-weight: 800;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+      font-family: 'Montserrat', sans-serif;
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(45deg, #fff, #f0f8ff, #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      margin: 12px 0 0 0;
+      font-size: 1.3em;
+      opacity: 0.95;
+      font-weight: 500;
+      position: relative;
+      z-index: 2;
+    }
+
+    nav { 
+      text-align: center; 
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 50%, #d299c2 100%); 
+      border-bottom: 3px solid rgba(102,126,234,0.2); 
+      position: sticky; 
+      top: 0; 
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      overflow-x: auto;
+      white-space: nowrap;
+      padding: 0 10px;
+    }
+
+    nav button { 
+      background: none; 
+      color: var(--main-dark); 
+      border: none; 
+      border-bottom: 4px solid transparent; 
+      border-radius: 0; 
+      padding: 18px 24px; 
+      margin: 0 4px; 
+      font-size: 1.05em; 
+      font-weight: 700; 
+      cursor: pointer; 
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      display: inline-block;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    nav button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(102,126,234,0.3), transparent);
+      transition: left 0.6s;
+    }
+
+    nav button:hover::before {
+      left: 100%;
+    }
+
+    nav button.active, nav button:focus { 
+      border-bottom: 4px solid var(--main-dark); 
+      color: var(--main-dark); 
+      background: linear-gradient(135deg, rgba(102,126,234,0.15), rgba(255,255,255,0.9));
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(102,126,234,0.3);
+    }
+
+    nav button:hover {
+      background: linear-gradient(135deg, rgba(102,126,234,0.2), rgba(255,255,255,0.95));
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(102,126,234,0.2);
+    }
+
+    .container { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 40px 20px;
+    }
+
+    .tab-section { 
+      display: none; 
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    .tab-section.active { 
+      display: block; 
+    }
+
+    /* Estilos para los headers de sección */
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 50px 30px;
+      background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(168,237,234,0.1));
+      border-radius: 25px;
+      border: 3px solid rgba(102,126,234,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-header.amazon {
+      background: linear-gradient(135deg, rgba(255,153,0,0.1), rgba(255,182,77,0.1));
+      border: 3px solid rgba(255,153,0,0.3);
+    }
+
+    .section-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: var(--rainbow-gradient);
+      animation: rainbow 3s linear infinite;
+    }
+
+    @keyframes rainbow {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    .section-header.amazon::before {
+      background: linear-gradient(90deg, var(--amazon-orange), #ffb84d, #ff6b6b, var(--amazon-orange));
+      background-size: 200% 100%;
+    }
+
+    .section-header h2 {
+      margin: 0 0 20px 0;
+      font-size: 3em;
+      color: var(--main-dark);
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Montserrat', sans-serif;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .section-header.amazon h2 {
+      background: linear-gradient(135deg, var(--amazon-orange), #ff6b6b, #ffb84d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-header p {
+      margin: 0;
+      font-size: 1.3em;
+      color: var(--main-muted);
+      font-weight: 500;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Información educativa */
+    .info-text {
+      background: linear-gradient(135deg, #f8f9fa, #ffffff);
+      border-radius: 20px;
+      padding: 30px;
+      margin: 30px 0 50px 0;
+      border-left: 6px solid var(--main-dark);
+      box-shadow: 0 8px 30px rgba(34,51,102,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-text::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, rgba(102,126,234,0.1), transparent);
+      border-radius: 50%;
+      transform: translate(30px, -30px);
+    }
+
+    .info-text.amazon {
+      border-left: 6px solid var(--amazon-orange);
+      background: linear-gradient(135deg, #fff8f0, #ffffff);
+    }
+
+    .info-text.amazon::before {
+      background: linear-gradient(135deg, rgba(255,153,0,0.1), transparent);
+    }
+
+    .info-text h3 {
+      margin: 0 0 16px 0;
+      color: var(--main-dark);
+      font-size: 1.5em;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .info-text.amazon h3 {
+      color: var(--amazon-blue);
+    }
+
+    .info-text p {
+      margin: 0;
+      color: var(--main-text);
+      line-height: 1.8;
+      font-size: 1.05em;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(-30px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .card-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); 
+      gap: 40px; 
+      margin-bottom: 50px;
+    }
+
+    .card { 
+      background: linear-gradient(135deg, #ffffff, #f8f9fa); 
+      border: 3px solid #e3e8ee; 
+      border-radius: 25px; 
+      box-shadow: 0 8px 30px rgba(34,51,102,0.1); 
+      padding: 40px; 
+      margin-bottom: 20px; 
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(102,126,234,0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .card:hover::after {
+      opacity: 1;
+    }
+
+    .card.amazon {
+      border: 3px solid rgba(255,153,0,0.3);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: var(--rainbow-gradient);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+      border-radius: 25px 25px 0 0;
+    }
+
+    .card.amazon::before {
+      background: linear-gradient(90deg, var(--amazon-orange), #ffb84d, #ff6b6b);
+    }
+
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .card-collapsible { 
+      cursor: pointer; 
+      transition: all 0.5s ease; 
+      position: relative;
+    }
+
+    .card-collapsible:hover { 
+      box-shadow: 0 20px 60px rgba(102,126,234,0.2); 
+      background: linear-gradient(135deg, #f0f8ff, #ffffff);
+      transform: translateY(-10px) scale(1.02);
+      border-color: #667eea;
+    }
+
+    .card-collapsible.amazon:hover {
+      box-shadow: 0 20px 60px rgba(255,153,0,0.2);
+      background: linear-gradient(135deg, #fff8f0, #ffffff);
+      border-color: var(--amazon-orange);
+    }
+
+    .card-collapsible .toggle-icon { 
+      position: absolute; 
+      top: 40px; 
+      right: 40px; 
+      font-size: 1.8em; 
+      color: var(--main-dark); 
+      user-select: none; 
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      background: linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2));
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .card-collapsible:hover .toggle-icon {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      transform: scale(1.2);
+      box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+    }
+
+    .card-collapsible.open .toggle-icon { 
+      transform: rotate(90deg) scale(1.2);
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+
+    .card-details { 
+      max-height: 0; 
+      overflow: hidden; 
+      opacity: 0; 
+      transition: all 0.8s cubic-bezier(.4,0,.2,1);
+      transform: translateY(-15px);
+    }
+
+    .card-collapsible.open .card-details { 
+      max-height: 800px; 
+      opacity: 1; 
+      margin-top: 30px;
+      transform: translateY(0);
+    }
+
+    .card-title { 
+      font-weight: 800; 
+      font-size: 1.6em; 
+      color: var(--main-dark); 
+      margin-bottom: 20px;
+      padding-right: 70px;
+      font-family: 'Montserrat', sans-serif;
+      line-height: 1.3;
+    }
+
+    .card-title.amazon {
+      color: var(--amazon-blue);
+    }
+
+    .badges { 
+      margin-bottom: 25px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .badge { 
+      display: inline-block; 
+      border-radius: 30px; 
+      padding: 10px 20px; 
+      font-size: 0.95em; 
+      font-weight: 700; 
+      background: linear-gradient(135deg, #a8edea, #fed6e3); 
+      color: var(--main-dark);
+      border: 2px solid transparent;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .badge.amazon {
+      background: linear-gradient(135deg, var(--amazon-orange), #ffb84d);
+      color: white;
+    }
+
+    .badge::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+      transition: left 0.6s;
+    }
+
+    .badge:hover::before {
+      left: 100%;
+    }
+
+    .badge:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(102,126,234,0.4);
+    }
+
+    .baja { background: linear-gradient(135deg, #4caf50, #45a049); color: white; }
+    .media { background: linear-gradient(135deg, #ff9800, #f57c00); color: white; }
+    .alta { background: linear-gradient(135deg, #f44336, #d32f2f); color: white; }
+    .muy-alta { background: linear-gradient(135deg, #9c27b0, #7b1fa2); color: white; }
+    .minima { background: linear-gradient(135deg, #607d8b, #455a64); color: white; }
+
+    .ventajas h4, .desventajas h4 { 
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px; 
+      font-size: 1.2em;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .ventajas h4 { color: var(--success); }
+    .desventajas h4 { color: var(--error); }
+
+    .ventajas h4::before { content: "✅ "; margin-right: 10px; font-size: 1.3em; }
+    .desventajas h4::before { content: "❌ "; margin-right: 10px; font-size: 1.3em; }
+
+    .ventajas ul, .desventajas ul {
+      margin: 0;
+      padding-left: 25px;
+      list-style: none;
+    }
+
+    .ventajas li, .desventajas li {
+      margin-bottom: 10px;
+      position: relative;
+      padding-left: 25px;
+      animation: slideIn 0.4s ease forwards;
+      opacity: 0;
+      font-size: 1.05em;
+      line-height: 1.6;
+    }
+
+    .ventajas li::before {
+      content: "▶";
+      position: absolute;
+      left: 0;
+      color: var(--success);
+      font-size: 0.9em;
+      font-weight: 700;
+    }
+
+    .desventajas li::before {
+      content: "▶";
+      position: absolute;
+      left: 0;
+      color: var(--error);
+      font-size: 0.9em;
+      font-weight: 700;
+    }
+
+    .card-collapsible.open .ventajas li,
+    .card-collapsible.open .desventajas li {
+      animation-delay: calc(var(--i) * 0.1s);
+      opacity: 1;
+    }
+
+    .dashboard-hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin: 60px 0;
+      padding: 50px;
+      background: linear-gradient(135deg, rgba(102,126,234,0.08), rgba(168,237,234,0.08));
+      border-radius: 30px;
+      border: 3px solid rgba(102,126,234,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(102,126,234,0.1) 0%, transparent 70%);
+      animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .dashboard-info {
+      position: relative;
+      z-index: 2;
+    }
+
+    .dashboard-info h2 {
+      margin-top: 0;
+      font-size: 2.8em;
+      color: var(--main-text);
+      margin-bottom: 25px;
+      background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .dashboard-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 25px;
+      margin-top: 40px;
+    }
+
+    .metric-card {
+      background: linear-gradient(135deg, #ffffff, #f8f9fa);
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(34,51,102,0.15);
+      padding: 30px;
+      text-align: center;
+      transition: all 0.4s ease;
+      border: 3px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--rainbow-gradient);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .metric-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .metric-card:hover {
+      transform: translateY(-8px) scale(1.05);
+      box-shadow: 0 15px 50px rgba(102,126,234,0.25);
+      border-color: #667eea;
+    }
+
+    .metric-value {
+      font-size: 2.5em;
+      font-weight: 800;
+      color: var(--main-dark);
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .metric-label {
+      font-size: 1.05em;
+      color: var(--main-text);
+      font-weight: 600;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .chart-container {
+      background: linear-gradient(135deg, #ffffff, #f8f9fa);
+      border-radius: 25px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(34,51,102,0.15);
+      margin-bottom: 40px;
+      border: 3px solid rgba(102,126,234,0.1);
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .chart-container canvas {
+      max-height: 350px !important;
+    }
+
+    .roi-calc {
+      max-width: 550px;
+      margin: 0 auto 50px auto;
+      background: linear-gradient(135deg, #f9fbe7, #ffffff);
+      border: 3px solid #e3e8ee;
+      border-radius: 25px;
+      padding: 40px;
+      box-shadow: 0 12px 40px rgba(34,51,102,0.15);
+    }
+
+    .roi-calc h3 {
+      color: var(--main-dark);
+      margin-top: 0;
+      font-size: 1.8em;
+      text-align: center;
+      margin-bottom: 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+
+    .roi-calc label {
+      font-weight: 600;
+      color: var(--main-text);
+      display: block;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .roi-calc input, .roi-calc select {
+      width: 100%;
+      padding: 15px 20px;
+      margin-bottom: 25px;
+      border-radius: 15px;
+      border: 3px solid #e0e0e0;
+      font-size: 1.1em;
+      transition: all 0.3s ease;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 500;
+    }
+
+    .roi-calc input:focus, .roi-calc select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102,126,234,0.15);
+      transform: translateY(-2px);
+    }
+
+    .roi-calc button {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      border: none;
+      border-radius: 15px;
+      padding: 18px 30px;
+      font-size: 1.2em;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.4s ease;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .roi-calc button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(102,126,234,0.4);
+      background: linear-gradient(135deg, #764ba2, #f093fb);
+    }
+
+    .roi-result {
+      margin-top: 25px;
+      background: linear-gradient(135deg, #e3f2fd, #ffffff);
+      border-radius: 15px;
+      padding: 25px;
+      color: #1976d2;
+      font-weight: 600;
+      border-left: 6px solid #1976d2;
+      font-size: 1.05em;
+    }
+
+    .slider-container {
+      background: linear-gradient(135deg, #ffffff, #f8f9fa);
+      border-radius: 25px;
+      padding: 40px;
+      box-shadow: 0 8px 30px rgba(34,51,102,0.15);
+      margin-bottom: 40px;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .slider-row {
+      margin-bottom: 30px;
+    }
+
+    .slider-row label {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      color: var(--main-text);
+      margin-bottom: 12px;
+      font-size: 1.1em;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .slider {
+      width: 100%;
+      height: 10px;
+      border-radius: 8px;
+      background: #e0e0e0;
+      outline: none;
+      -webkit-appearance: none;
+      transition: all 0.3s ease;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+      transition: all 0.4s ease;
+    }
+
+    .slider::-webkit-slider-thumb:hover {
+      transform: scale(1.3);
+      box-shadow: 0 8px 30px rgba(102,126,234,0.5);
+    }
+
+    .score-display {
+      background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+      color: white;
+      padding: 25px;
+      border-radius: 20px;
+      text-align: center;
+      font-size: 1.5em;
+      font-weight: 800;
+      margin-top: 30px;
+      font-family: 'Montserrat', sans-serif;
+      box-shadow: 0 8px 30px rgba(102,126,234,0.3);
+    }
+
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 40px;
+      margin-bottom: 50px;
+    }
+
+    .info-card {
+      background: linear-gradient(135deg, #ffffff, #f8f9fa);
+      border-radius: 25px;
+      padding: 40px;
+      box-shadow: 0 8px 30px rgba(34,51,102,0.1);
+      transition: all 0.4s ease;
+      border: 3px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--rainbow-gradient);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .info-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .info-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(102,126,234,0.2);
+      border-color: #667eea;
+    }
+
+    .info-card h3 {
+      color: var(--main-dark);
+      margin-top: 0;
+      font-size: 1.6em;
+      margin-bottom: 20px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+
+    .click-hint {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 2px solid #f0f0f0;
+      font-size: 0.95em;
+      color: #888;
+      font-style: italic;
+      transition: color 0.3s ease;
+      font-weight: 500;
+    }
+
+    .card-collapsible:hover .click-hint {
+      color: var(--main-dark);
+      font-weight: 600;
+    }
+
+    .pricing-table {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin: 40px 0;
+    }
+
+    .pricing-card {
+      background: linear-gradient(135deg, #ffffff, #f8f9fa);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(34,51,102,0.15);
+      border: 3px solid #e3e8ee;
+      transition: all 0.4s ease;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--amazon-orange), #ffb84d);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .pricing-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 15px 50px rgba(255,153,0,0.25);
+      border-color: var(--amazon-orange);
+    }
+
+    .pricing-card h4 {
+      color: var(--amazon-blue);
+      margin-top: 0;
+      font-size: 1.4em;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+
+    .price {
+      font-size: 2.2em;
+      font-weight: 800;
+      color: var(--amazon-orange);
+      margin: 20px 0;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .features-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+
+    .features-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 1.05em;
+    }
+
+    .features-list li:last-child {
+      border-bottom: none;
+    }
+
+    .demo-container {
+      background: var(--party-gradient);
+      border-radius: 25px;
+      padding: 40px;
+      margin: 40px 0;
+      border: 4px solid rgba(255,255,255,0.3);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+    }
+
+    .demo-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+      animation: shimmer 4s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .demo-container h3 {
+      color: white;
+      margin-bottom: 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2em;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+      position: relative;
+      z-index: 2;
+      font-weight: 800;
+    }
+
+    /* PartyRock Demo Styles */
+    .partyrock-demo {
+      background: linear-gradient(135deg, #ffffff, #f8f9fa);
+      border-radius: 20px;
+      padding: 30px;
+      margin: 25px 0;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+      position: relative;
+      z-index: 2;
+      min-height: 450px;
+    }
+
+    .demo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #e0e0e0;
+    }
+
+    .demo-title {
+      font-size: 1.4em;
+      font-weight: 700;
+      color: var(--amazon-blue);
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .demo-controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    .demo-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .demo-btn.primary {
+      background: linear-gradient(135deg, var(--amazon-orange), #ffb84d);
+      color: white;
+    }
+
+    .demo-btn.secondary {
+      background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+      color: var(--amazon-blue);
+    }
+
+    .demo-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+
+    .demo-workspace {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 25px;
+      height: 350px;
+    }
+
+    .demo-sidebar {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      border-radius: 15px;
+      padding: 20px;
+      border: 3px solid #e0e0e0;
+    }
+
+    .demo-sidebar h4 {
+      margin: 0 0 15px 0;
+      color: var(--amazon-blue);
+      font-size: 1.1em;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+
+    .component-item {
+      background: linear-gradient(135deg, var(--amazon-orange), #ffb84d);
+      color: white;
+      padding: 12px 16px;
+      margin: 10px 0;
+      border-radius: 12px;
+      cursor: grab;
+      font-size: 0.95em;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      user-select: none;
+      font-family: 'Montserrat', sans-serif;
+      box-shadow: 0 4px 15px rgba(255,153,0,0.3);
+    }
+
+    .component-item:hover {
+      transform: scale(1.08);
+      box-shadow: 0 8px 25px rgba(255,153,0,0.4);
+    }
+
+    .component-item:active {
+      cursor: grabbing;
+      transform: scale(0.95);
+    }
+
+    .demo-canvas {
+      background: linear-gradient(135deg, #ffffff, #f8f9fa);
+      border: 3px dashed #ccc;
+      border-radius: 15px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 350px;
+      transition: all 0.3s ease;
+    }
+
+    .canvas-placeholder {
+      color: #999;
+      font-size: 1.2em;
+      text-align: center;
+      pointer-events: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+    }
+
+    .dropped-component {
+      background: linear-gradient(135deg, #4ecdc4, #44a08d);
+      color: white;
+      padding: 15px 25px;
+      margin: 12px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(78,205,196,0.4);
+      font-weight: 600;
+      animation: dropIn 0.6s ease;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .dropped-component:hover {
+      transform: scale(1.08);
+      box-shadow: 0 8px 30px rgba(78,205,196,0.5);
+    }
+
+    @keyframes dropIn {
+      0% { transform: scale(0) rotate(180deg); opacity: 0; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .demo-output {
+      margin-top: 25px;
+      padding: 20px;
+      background: linear-gradient(135deg, #e8f5e8, #ffffff);
+      border-radius: 15px;
+      border-left: 6px solid #4caf50;
+    }
+
+    .output-title {
+      font-weight: 700;
+      color: #2e7d32;
+      margin-bottom: 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.1em;
+    }
+
+    .output-content {
+      color: #1b5e20;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 0.95em;
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    .footer {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="footerGrain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="5" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23footerGrain)"/></svg>');
+      opacity: 0.3;
+    }
+
+    .footer-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .footer h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      background: linear-gradient(45deg, #fff, #f0f8ff, #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer p {
+      font-size: 1.1em;
+      margin-bottom: 20px;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    .footer-signature {
+      font-size: 1.2em;
+      font-weight: 700;
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 2px solid rgba(255,255,255,0.3);
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .footer-signature .author {
+      background: linear-gradient(45deg, #fff, #ffeb3b, #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 800;
+      font-size: 1.3em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-hero {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 30px;
+      }
+      
+      .card-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+      
+      .dashboard-metrics {
+        grid-template-columns: 1fr;
+      }
+      
+      nav {
+        padding: 0 5px;
+      }
+      
+      nav button {
+        padding: 15px 15px;
+        font-size: 0.9em;
+        margin: 0 2px;
+      }
+      
+      .card {
+        padding: 30px;
+      }
+      
+      .card-collapsible .toggle-icon {
+        top: 30px;
+        right: 30px;
+        width: 45px;
+        height: 45px;
+        font-size: 1.6em;
+      }
+      .section-header {
+        padding: 30px 20px;
+        margin-bottom: 30px;
+      }
+      .section-header h2 {
+        font-size: 2.2em;
+      }
+      .section-header p {
+        font-size: 1.1em;
+      }
+      .pricing-table {
+        grid-template-columns: 1fr;
+      }
+      .chart-container {
+        padding: 20px;
+      }
+      .chart-container canvas {
+        max-height: 280px !important;
+      }
+      .demo-workspace {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .demo-sidebar {
+        order: 2;
+      }
+      .demo-canvas {
+        order: 1;
+        min-height: 250px;
+      }
+      header h1 {
+        font-size: 2.2em;
+      }
+      .container {
+        padding: 30px 15px;
+      }
+    }
+
+    .loading {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 4px solid rgba(102,126,234,.3);
+      border-radius: 50%;
+      border-top-color: #667eea;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .pulse {
+      animation: pulse 2.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    /* Mejoras adicionales */
+    .glow {
+      box-shadow: 0 0 20px rgba(102,126,234,0.5);
+    }
+
+    .text-gradient {
+      background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Scrollbar personalizada */
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #764ba2, #f093fb);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>🤖 Agentes de IA y Frameworks</h1>
+    <p>Explora el fascinante mundo de la Inteligencia Artificial</p>
+  </header>
+
+  <nav>
+    <button class="tab-btn active" data-tab="inicio">🏠 Inicio</button>
+    <button class="tab-btn" data-tab="agentes">🤖 Tipos de Agentes</button>
+    <button class="tab-btn" data-tab="amazonq">🟠 Amazon Q</button>
+    <button class="tab-btn" data-tab="cedric">💬 Cedric</button>
+    <button class="tab-btn" data-tab="partyrock">🎉 PartyRock</button>
+    <button class="tab-btn" data-tab="frameworks">⚙️ Frameworks</button>
+    <button class="tab-btn" data-tab="industrias">🏭 Casos de Uso</button>
+    <button class="tab-btn" data-tab="metricas">📊 Métricas</button>
+    <button class="tab-btn" data-tab="tendencias">📈 Tendencias</button>
+  </nav>
+
+  <div class="container">
+    <!-- INICIO -->
+    <div id="inicio" class="tab-section active">
+      <div class="info-text">
+        <h3>💡 ¿Qué encontrarás en este dashboard?</h3>
+        <p>Este dashboard interactivo te guiará a través del fascinante mundo de los agentes de inteligencia artificial. Desde los conceptos básicos hasta las implementaciones más avanzadas de empresas como Amazon, descubrirás cómo la IA está transformando la forma en que trabajamos y vivimos.</p>
+      </div>
+
+      <div class="info-cards">
+        <div class="info-card">
+          <h3>🧠 ¿Qué son los Agentes de IA?</h3>
+          <p>Los agentes de IA son sistemas autónomos que pueden percibir su entorno, procesar información y tomar decisiones para alcanzar objetivos específicos. Desde simples sensores hasta complejos sistemas de aprendizaje automático.</p>
+        </div>
+        <div class="info-card">
+          <h3>🚀 Aplicaciones Actuales</h3>
+          <p>Desde asistentes virtuales hasta sistemas de trading automatizado, los agentes de IA están revolucionando sectores como tecnología, marketing, retail y servicios financieros.</p>
+        </div>
+        <div class="info-card">
+          <h3>🌟 Futuro Prometedor</h3>
+          <p>Con un crecimiento proyectado del 45.82% anual, el mercado de agentes de IA alcanzará los $236 billones USD para 2034, impulsado por la adopción empresarial masiva.</p>
+        </div>
+      </div>
+
+      <div class="dashboard-hero">
+        <div class="dashboard-info">
+          <h2>Bienvenido al Mundo de los Agentes de IA</h2>
+          <p>Los agentes de inteligencia artificial representan una evolución fundamental en la automatización y toma de decisiones. Explora los diferentes tipos, frameworks y aplicaciones que están transformando industrias enteras.</p>
+          
+          <div class="dashboard-metrics">
+            <div class="metric-card pulse">
+              <div class="metric-value" id="metric-agentes">5+</div>
+              <div class="metric-label">Tipos de Agentes</div>
+            </div>
+            <div class="metric-card pulse">
+              <div class="metric-value" id="metric-frameworks">4</div>
+              <div class="metric-label">Frameworks</div>
+            </div>
+            <div class="metric-card pulse">
+              <div class="metric-value" id="metric-cagr">45.82%</div>
+              <div class="metric-label">Crecimiento Anual</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="chart-container">
+          <canvas id="heroChart" width="400" height="300"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- AGENTES -->
+    <div id="agentes" class="tab-section">
+      <div class="section-header">
+        <h2>🤖 Tipos de Agentes de IA</h2>
+        <p>Explora los diferentes tipos de agentes según su complejidad y autonomía</p>
+      </div>
+
+      <div class="info-text">
+        <h3>🔍 ¿Qué es un Agente de IA?</h3>
+        <p>Un agente de inteligencia artificial es un sistema computacional que actúa de forma autónoma en un entorno para alcanzar objetivos específicos. Estos agentes pueden percibir su entorno a través de sensores, procesar información, tomar decisiones y ejecutar acciones. La clasificación de los agentes se basa en su nivel de complejidad, autonomía y capacidad de aprendizaje, desde simples sistemas reactivos hasta sofisticados agentes que aprenden y se adaptan continuamente.</p>
+      </div>
+
+      <div id="agentsGrid"></div>
+    </div>
+
+    <!-- AMAZON Q -->
+    <div id="amazonq" class="tab-section">
+      <div class="section-header amazon">
+        <h2>🟠 Amazon Q</h2>
+        <p>Suite de asistentes generativos de AWS orientados a desarrolladores y empresas</p>
+      </div>
+
+      <div class="info-text amazon">
+        <h3>🚀 ¿Qué es Amazon Q?</h3>
+        <p>Amazon Q es una suite completa de asistentes de IA generativa desarrollada por AWS, diseñada específicamente para acelerar la productividad de desarrolladores y empresas. Construido sobre Amazon Bedrock, ofrece seguridad de nivel empresarial con aislamiento de datos y control de acceso IAM. La suite incluye Q Developer para programadores, Q Business para búsqueda empresarial y Q Apps para crear aplicaciones sin código.</p>
+      </div>
+
+      <div class="chart-container">
+        <h3 style="text-align: center; color: var(--amazon-blue); margin-bottom: 24px;">📊 Comparativa de Servicios Amazon Q</h3>
+        <canvas id="amazonQChart"></canvas>
+      </div>
+
+      <div class="pricing-table">
+        <div class="pricing-card">
+          <h4>Q Developer Free</h4>
+          <div class="price">$0</div>
+          <ul class="features-list">
+            <li>✅ Generación básica de código</li>
+            <li>✅ Autocompletado en IDEs</li>
+            <li>✅ Explicación de código</li>
+            <li>❌ Funciones avanzadas limitadas</li>
+          </ul>
+        </div>
+        <div class="pricing-card">
+          <h4>Q Developer Pro</h4>
+          <div class="price">$19<span style="font-size: 0.5em;">/mes</span></div>
+          <ul class="features-list">
+            <li>✅ Todas las funciones Free</li>
+            <li>✅ Generación de tests automáticos</li>
+            <li>✅ Migraciones de código</li>
+            <li>✅ Soporte prioritario</li>
+          </ul>
+        </div>
+        <div class="pricing-card">
+          <h4>Q Business Lite</h4>
+          <div class="price">$3<span style="font-size: 0.5em;">/usuario</span></div>
+          <ul class="features-list">
+            <li>✅ Búsqueda en documentos</li>
+            <li>✅ Chat básico</li>
+            <li>✅ Integración con 40+ fuentes</li>
+            <li>❌ Funciones avanzadas limitadas</li>
+          </ul>
+        </div>
+        <div class="pricing-card">
+          <h4>Q Business Pro</h4>
+          <div class="price">$20<span style="font-size: 0.5em;">/usuario</span></div>
+          <ul class="features-list">
+            <li>✅ Todas las funciones Lite</li>
+            <li>✅ Plugins personalizados</li>
+            <li>✅ API ChatSync</li>
+            <li>✅ Análisis avanzado</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <div class="card amazon">
+          <h3 class="card-title amazon">🛠️ Q Developer</h3>
+          <div class="badges">
+            <span class="badge amazon">Desarrollo</span>
+            <span class="badge amazon">IDE Integration</span>
+          </div>
+          <p>Asistente de IA especializado en desarrollo de software que acelera la productividad del programador.</p>
+          <ul style="margin: 16px 0; padding-left: 20px;">
+            <li><strong>Generación de código:</strong> Crea funciones completas desde comentarios</li>
+            <li><strong>Tests automáticos:</strong> Genera casos de prueba comprehensivos</li>
+            <li><strong>Migraciones:</strong> Actualiza código legacy a nuevas versiones</li>
+            <li><strong>Debugging:</strong> Identifica y sugiere correcciones de errores</li>
+            <li><strong>Documentación:</strong> Genera documentación automática</li>
+          </ul>
+          <div style="background: #fff8f0; padding: 16px; border-radius: 12px; margin-top: 16px;">
+            <strong>💡 Caso de uso:</strong> Un desarrollador reduce 40% el tiempo de desarrollo usando Q Developer para generar boilerplate code y tests unitarios.
+          </div>
+        </div>
+
+        <div class="card amazon">
+          <h3 class="card-title amazon">💼 Q Business</h3>
+          <div class="badges">
+            <span class="badge amazon">Empresarial</span>
+            <span class="badge amazon">Búsqueda</span>
+          </div>
+          <p>Chatbot empresarial que busca y responde preguntas sobre documentos internos de la empresa.</p>
+          <ul style="margin: 16px 0; padding-left: 20px;">
+            <li><strong>Búsqueda inteligente:</strong> Encuentra información en wikis, PDFs, tickets</li>
+            <li><strong>Chat embebible:</strong> Integra en aplicaciones existentes</li>
+            <li><strong>40+ conectores:</strong> SharePoint, Confluence, Jira, Salesforce</li>
+            <li><strong>Seguridad IAM:</strong> Respeta permisos de usuario</li>
+            <li><strong>API ChatSync:</strong> Integración programática</li>
+          </ul>
+          <div style="background: #fff8f0; padding: 16px; border-radius: 12px; margin-top: 16px;">
+            <strong>💡 Caso de uso:</strong> Empleados de soporte encuentran respuestas 60% más rápido consultando la base de conocimiento via Q Business.
+          </div>
+        </div>
+
+        <div class="card amazon">
+          <h3 class="card-title amazon">🚀 Q Apps (Preview)</h3>
+          <div class="badges">
+            <span class="badge amazon">No-Code</span>
+            <span class="badge amazon">Preview</span>
+          </div>
+          <p>Plataforma no-code para crear micro-aplicaciones generativas personalizadas.</p>
+          <ul style="margin: 16px 0; padding-left: 20px;">
+            <li><strong>Creación visual:</strong> Arrastra y suelta componentes</li>
+            <li><strong>Despliegue rápido:</strong> Un clic para publicar</li>
+            <li><strong>Plantillas:</strong> Casos de uso pre-configurados</li>
+            <li><strong>Integración AWS:</strong> Conecta con servicios AWS</li>
+            <li><strong>Colaboración:</strong> Comparte apps con el equipo</li>
+          </ul>
+          <div style="background: #fff8f0; padding: 16px; border-radius: 12px; margin-top: 16px;">
+            <strong>💡 Caso de uso:</strong> Un gerente de marketing crea una app para generar copy publicitario personalizado sin escribir código.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CEDRIC -->
+    <div id="cedric" class="tab-section">
+      <div class="section-header amazon">
+        <h2>💬 Cedric</h2>
+        <p>Chatbot interno de Amazon para empleados - El futuro de la comunicación empresarial</p>
+      </div>
+
+      <div class="info-text amazon">
+        <h3>🔐 ¿Qué es Cedric?</h3>
+        <p>Cedric es el chatbot interno de Amazon, diseñado como una alternativa segura a ChatGPT para uso empresarial. Basado en Amazon Bedrock y modelos Claude, opera completamente dentro de la infraestructura de Amazon, garantizando que ningún dato sensible o propiedad intelectual salga de la empresa. Representa un modelo pionero de cómo las grandes corporaciones pueden implementar IA generativa manteniendo control total sobre sus datos.</p>
+      </div>
+
+      <div class="chart-container">
+        <h3 style="text-align: center; color: var(--amazon-blue); margin-bottom: 24px;">📈 Impacto de Cedric en Amazon</h3>
+        <canvas id="cedricChart"></canvas>
+      </div>
+
+      <div class="info-cards">
+        <div class="info-card">
+          <h3>🔒 Seguridad Empresarial</h3>
+          <p>Cedric opera completamente dentro de la infraestructura de Amazon, garantizando que ningún dato sensible o propiedad intelectual salga de la empresa. Utiliza Amazon Bedrock con modelos Claude para procesamiento seguro.</p>
+        </div>
+        <div class="info-card">
+          <h3>⚡ Productividad Mejorada</h3>
+          <p>Los empleados reportan un 35% de aumento en productividad al usar Cedric para tareas como resúmenes de documentos, brainstorming y consultas sobre políticas internas.</p>
+        </div>
+        <div class="info-card">
+          <h3>🔧 Extensibilidad</h3>
+          <p>Cedric se puede extender con "custom skills" desarrollados internamente usando AWS Lambda, permitiendo integraciones específicas con sistemas internos de Amazon.</p>
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <div class="card amazon">
+          <h3 class="card-title amazon">🎯 Funcionalidades Principales</h3>
+          <ul style="margin: 16px 0; padding-left: 20px;">
+            <li><strong>📋 Q&A sobre políticas:</strong> Responde preguntas sobre procedimientos internos</li>
+            <li><strong>📄 Resúmenes de documentos:</strong> Extrae puntos clave de reportes largos</li>
+            <li><strong>💡 Brainstorming:</strong> Genera ideas para proyectos y soluciones</li>
+            <li><strong>🔍 Búsqueda inteligente:</strong> Encuentra información en sistemas internos</li>
+            <li><strong>📊 Análisis de datos:</strong> Interpreta métricas y KPIs</li>
+            <li><strong>✍️ Redacción asistida:</strong> Ayuda con emails y documentos</li>
+          </ul>
+        </div>
+
+        <div class="card amazon">
+          <h3 class="card-title amazon">🏗️ Arquitectura Técnica</h3>
+          <div style="background: #fff8f0; padding: 20px; border-radius: 12px; margin: 16px 0;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: center;">
+              <div>
+                <strong>🔧 Backend</strong><br>
+                Amazon Bedrock<br>
+                Claude Models<br>
+                AWS Lambda
+              </div>
+              <div>
+                <strong>💻 Frontend</strong><br>
+                Slack Integration<br>
+                Web Portal<br>
+                Mobile App
+              </div>
+            </div>
+          </div>
+          <p><strong>Flujo de datos:</strong> Usuario → Slack/Portal → API Gateway → Lambda → Bedrock → Claude → Respuesta</p>
+        </div>
+
+        <div class="card amazon">
+          <h3 class="card-title amazon">📊 Métricas de Adopción</h3>
+          <div class="dashboard-metrics" style="margin: 20px 0;">
+            <div class="metric-card">
+              <div class="metric-value" style="color: var(--amazon-orange);">85%</div>
+              <div class="metric-label">Adopción empleados</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" style="color: var(--amazon-orange);">2.3M</div>
+              <div class="metric-label">Consultas/mes</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" style="color: var(--amazon-orange);">35%</div>
+              <div class="metric-label">↑ Productividad</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card amazon">
+          <h3 class="card-title amazon">🌟 ¿Por qué es Relevante?</h3>
+          <div class="ventajas">
+            <h4>Ventajas Estratégicas</h4>
+            <ul>
+              <li style="--i: 0">Evita filtraciones de IP y datos sensibles</li>
+              <li style="--i: 1">Reduce dependencia de proveedores externos</li>
+              <li style="--i: 2">Modelo replicable para otras empresas</li>
+              <li style="--i: 3">Control total sobre datos y procesamiento</li>
+              <li style="--i: 4">Cumplimiento regulatorio garantizado</li>
+            </ul>
+          </div>
+          <div style="background: #e8f5e8; padding: 16px; border-radius: 12px; margin-top: 16px;">
+            <strong>🎯 Lección clave:</strong> Cedric demuestra que las empresas pueden crear chatbots internos potentes sin comprometer la seguridad de sus datos.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PARTYROCK -->
+    <div id="partyrock" class="tab-section">
+      <div class="section-header amazon">
+        <h2>🎉 PartyRock</h2>
+        <p>Playground público para construir mini-apps generativas sin código</p>
+      </div>
+
+      <div class="info-text amazon">
+        <h3>🎨 ¿Qué es PartyRock?</h3>
+        <p>PartyRock es un playground público de Amazon que permite a cualquier persona crear aplicaciones generativas sin necesidad de conocimientos técnicos o cuenta AWS. Utilizando una interfaz visual de arrastrar y soltar, los usuarios pueden encadenar diferentes modelos de IA para crear flujos complejos de procesamiento. Es una herramienta educativa y de prototipado que democratiza el acceso a la IA generativa.</p>
+      </div>
+
+      <div class="chart-container">
+        <h3 style="text-align: center; color: var(--amazon-blue); margin-bottom: 24px;">🎨 Tipos de Apps Creadas en PartyRock</h3>
+        <canvas id="partyrockChart"></canvas>
+      </div>
+
+      <div class="info-cards">
+        <div class="info-card">
+          <h3>🎯 Sin Barreras de Entrada</h3>
+          <p>PartyRock no requiere cuenta AWS ni conocimientos técnicos. Cualquier persona puede crear aplicaciones generativas arrastrando y soltando componentes visuales.</p>
+        </div>
+        <div class="info-card">
+          <h3>🔗 Encadenamiento Visual</h3>
+          <p>Conecta diferentes modelos de IA (texto, imagen, audio) de forma visual para crear flujos complejos de procesamiento de información.</p>
+        </div>
+        <div class="info-card">
+          <h3>💰 Créditos Gratuitos</h3>
+          <p>Incluye créditos mensuales gratuitos para experimentar con diferentes modelos de Amazon Bedrock sin costo inicial.</p>
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <div class="card amazon">
+          <h3 class="card-title amazon">🛠️ Características Principales</h3>
+          <ul style="margin: 16px 0; padding-left: 20px;">
+            <li><strong>🎨 Editor visual:</strong> Arrastra y suelta componentes</li>
+            <li><strong>🔗 Encadenamiento:</strong> Conecta prompts y modelos</li>
+            <li><strong>🌐 Compartir fácil:</strong> Publica con un enlace</li>
+            <li><strong>💎 Créditos gratuitos:</strong> Experimenta sin costo</li>
+            <li><strong>📱 Responsive:</strong> Funciona en móviles</li>
+            <li><strong>🎭 Múltiples modelos:</strong> Texto, imagen, audio</li>
+          </ul>
+        </div>
+
+        <div class="card amazon">
+          <h3 class="card-title amazon">🎵 Casos de Uso Populares</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
+            <div style="background: #fff8f0; padding: 16px; border-radius: 8px;">
+              <strong>🎵 Generador de Playlists</strong><br>
+              <small>Crea listas de reproducción personalizadas basadas en estado de ánimo y género musical</small>
+            </div>
+            <div style="background: #fff8f0; padding: 16px; border-radius: 8px;">
+              <strong>📚 Story-teller</strong><br>
+              <small>Genera historias interactivas con imágenes IA generadas</small>
+            </div>
+            <div style="background: #fff8f0; padding: 16px; border-radius: 8px;">
+              <strong>🤖 Chatbots Temáticos</strong><br>
+              <small>Asistentes especializados en cocina, fitness, viajes</small>
+            </div>
+            <div style="background: #fff8f0; padding: 16px; border-radius: 8px;">
+              <strong>🎨 Generador de Contenido</strong><br>
+              <small>Crea posts para redes sociales con texto e imágenes</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="card amazon">
+          <h3 class="card-title amazon">📈 Estadísticas de Uso</h3>
+          <div class="dashboard-metrics" style="margin: 20px 0;">
+            <div class="metric-card">
+              <div class="metric-value" style="color: var(--amazon-orange);">500K+</div>
+              <div class="metric-label">Apps creadas</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" style="color: var(--amazon-orange);">2M+</div>
+              <div class="metric-label">Usuarios activos</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value" style="color: var(--amazon-orange);">15min</div>
+              <div class="metric-label">Tiempo promedio creación</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card amazon">
+          <h3 class="card-title amazon">🚀 Ventajas Competitivas</h3>
+          <div class="ventajas">
+            <h4>Fortalezas</h4>
+            <ul>
+              <li style="--i: 0">No requiere conocimientos técnicos</li>
+              <li style="--i: 1">Acceso gratuito sin cuenta AWS</li>
+              <li style="--i: 2">Integración nativa con Bedrock</li>
+              <li style="--i: 3">Comunidad activa de creadores</li>
+              <li style="--i: 4">Plantillas pre-construidas</li>
+            </ul>
+          </div>
+          <div class="desventajas">
+            <h4>Limitaciones</h4>
+            <ul>
+              <li style="--i: 0">Funcionalidades limitadas vs desarrollo custom</li>
+              <li style="--i: 1">Dependiente del ecosistema AWS</li>
+              <li style="--i: 2">Créditos limitados en plan gratuito</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-container">
+        <h3>🎮 Demo Interactivo de PartyRock App Builder</h3>
+        <div class="partyrock-demo">
+          <div class="demo-header">
+            <h4 class="demo-title">🎨 Editor Visual PartyRock</h4>
+            <div class="demo-controls">
+              <button class="demo-btn primary" onclick="runDemo()">▶️ Ejecutar</button>
+              <button class="demo-btn secondary" onclick="clearDemo()">🗑️ Limpiar</button>
+              <button class="demo-btn secondary" onclick="saveDemo()">💾 Guardar</button>
+            </div>
+          </div>
+          
+          <div class="demo-workspace">
+            <div class="demo-sidebar">
+              <h4>🧩 Componentes</h4>
+              <div class="component-item" draggable="true" data-component="text-input">📝 Entrada de Texto</div>
+              <div class="component-item" draggable="true" data-component="ai-generator">🤖 Generador IA</div>
+              <div class="component-item" draggable="true" data-component="image-gen">🎨 Generador Imagen</div>
+              <div class="component-item" draggable="true" data-component="output">📤 Salida</div>
+            </div>
+            
+            <div class="demo-canvas" id="demoCanvas">
+              <div class="canvas-placeholder">
+                🎯 Arrastra componentes aquí para crear tu app<br>
+                <small>Ejemplo: Entrada de Texto → Generador IA → Salida</small>
+              </div>
+            </div>
+          </div>
+          
+          <div class="demo-output" id="demoOutput" style="display: none;">
+            <div class="output-title">🚀 Resultado de la App:</div>
+            <div class="output-content" id="outputContent">
+              Esperando ejecución...
+            </div>
+          </div>
+        </div>
+        
+        <p style="margin-top: 16px; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+          <strong>💡 Prueba el demo:</strong> Arrastra los componentes al canvas y haz clic en "Ejecutar" para ver cómo funciona PartyRock
+        </p>
+        <p style="margin-top: 8px; color: rgba(255,255,255,0.9); font-size: 0.9em;">
+          <strong>🌐 Visita:</strong> <a href="https://partyrock.aws" target="_blank" style="color: white; text-decoration: underline;">partyrock.aws</a> para probar el editor real
+        </p>
+      </div>
+    </div>
+
+    <!-- FRAMEWORKS -->
+    <div id="frameworks" class="tab-section">
+      <div class="section-header">
+        <h2>⚙️ Frameworks para Desarrollo de Agentes</h2>
+        <p>Compara las principales herramientas para construir agentes de IA</p>
+      </div>
+
+      <div class="info-text">
+        <h3>🔧 ¿Qué es un Framework?</h3>
+        <p>Un framework es una estructura o conjunto de herramientas, reglas y componentes predefinidos que sirve como base para desarrollar software, aplicaciones web, apps móviles u otros proyectos tecnológicos. En otras palabras, es como una plantilla avanzada que proporciona a los programadores una arquitectura y funcionalidades básicas ya listas, para que puedan centrarse en las partes específicas de su aplicación sin tener que construir todo desde cero.</p>
+      </div>
+      
+      <div class="chart-container">
+        <h3 style="text-align: center; color: var(--main-dark); margin-bottom: 24px;">📊 Comparativa de Frameworks</h3>
+        <canvas id="frameworksChart"></canvas>
+      </div>
+      <div id="frameworksCards"></div>
+    </div>
+
+    <!-- INDUSTRIAS -->
+    <div id="industrias" class="tab-section">
+      <div class="section-header">
+        <h2>🏭 Casos de Uso por Industria</h2>
+        <p>Descubre cómo los agentes de IA están transformando diferentes sectores</p>
+      </div>
+
+      <div class="info-text">
+        <h3>🌍 Transformación Industrial</h3>
+        <p>Los agentes de IA están revolucionando prácticamente todas las industrias, desde la automatización de procesos en tecnología hasta la personalización de experiencias en retail. Cada sector presenta oportunidades únicas para implementar soluciones de IA que mejoren la eficiencia, reduzcan costos y generen nuevas fuentes de valor. El retorno de inversión varía según la industria, pero todas muestran un potencial significativo de crecimiento.</p>
+      </div>
+
+      <div class="roi-calc">
+        <h3>💰 Calculadora de ROI</h3>
+        <label>Selecciona industria:</label>
+        <select id="roiIndustry">
+          <option value="Tecnología">🖥️ Tecnología</option>
+          <option value="Marketing">📢 Marketing</option>
+          <option value="Retail/E-commerce">🛒 Retail/E-commerce</option>
+          <option value="Servicios Financieros">💳 Servicios Financieros</option>
+        </select>
+        
+        <label>Inversión estimada (€):</label>
+        <input type="number" id="roiInput" placeholder="Ejemplo: 10000" min="1"/>
+        
+        <button onclick="calcularROI()">🧮 Calcular ROI</button>
+        <div id="roiResult" class="roi-result" style="display: none;"></div>
+      </div>
+
+      <div class="chart-container">
+        <h3 style="text-align: center; color: var(--main-dark); margin-bottom: 24px;">📈 ROI por Industria</h3>
+        <canvas id="roiChart"></canvas>
+      </div>
+
+      <div id="industryCards" class="card-grid"></div>
+    </div>
+
+    <!-- MÉTRICAS -->
+    <div id="metricas" class="tab-section">
+      <div class="section-header">
+        <h2>📊 Métricas de Evaluación</h2>
+        <p>Comprende cómo medir el rendimiento de tus agentes de IA</p>
+      </div>
+
+      <div class="info-text">
+        <h3>📏 Importancia de las Métricas</h3>
+        <p>Medir el rendimiento de los agentes de IA es crucial para garantizar su efectividad y optimizar su funcionamiento. Las métricas clave incluyen precisión (qué tan correctas son las respuestas), tiempo de respuesta (velocidad de procesamiento) y satisfacción del usuario (experiencia general). Estas métricas trabajan en conjunto para proporcionar una visión holística del rendimiento del sistema y identificar áreas de mejora.</p>
+      </div>
+
+      <div class="slider-container">
+        <h3 style="text-align: center; color: var(--main-dark); margin-bottom: 24px;">🎛️ Evaluador de Métricas Interactivo</h3>
+        <p style="text-align: center; color: var(--main-muted); margin-bottom: 32px;">Simula diferentes escenarios para entender el impacto de cada métrica</p>
+        <div class="slider-row">
+          <label>🎯 Precisión (%): <span id="precisionValue">95</span></label>
+          <input type="range" min="70" max="100" value="95" step="1" id="precisionSlider" class="slider">
+        </div>
+        <div class="slider-row">
+          <label>⚡ Tiempo de respuesta (ms): <span id="tiempoValue">300</span></label>
+          <input type="range" min="100" max="1000" value="300" step="10" id="tiempoSlider" class="slider">
+        </div>
+        <div class="slider-row">
+          <label>😊 Satisfacción del usuario (/5): <span id="satisfaccionValue">4.5</span></label>
+          <input type="range" min="3" max="5" value="4.5" step="0.1" id="satisfaccionSlider" class="slider">
+        </div>
+        <div class="score-display">
+          <div>🏆 Puntuación General: <span id="puntuacionGeneral">87</span>/100</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TENDENCIAS -->
+    <div id="tendencias" class="tab-section">
+      <div class="section-header">
+        <h2>📈 Tendencias del Mercado</h2>
+        <p>Analiza el crecimiento y las perspectivas futuras de los agentes de IA</p>
+      </div>
+
+      <div class="info-text">
+        <h3>🚀 El Futuro de los Agentes de IA</h3>
+        <p>El mercado de agentes de IA está experimentando un crecimiento exponencial sin precedentes. Con una tasa de crecimiento anual compuesta (CAGR) del 45.82%, se espera que el mercado pase de $5.43 billones en 2024 a $236 billones en 2034. Este crecimiento está impulsado por la adopción masiva en empresas, el desarrollo de sistemas multi-agente más sofisticados y la integración con tecnologías emergentes como IoT y edge computing.</p>
+      </div>
+
+      <div class="dashboard-metrics" style="margin-bottom: 40px;">
+        <div class="metric-card">
+          <div class="metric-value">$5.43B</div>
+          <div class="metric-label">💼 Mercado actual (2024)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">$236B</div>
+          <div class="metric-label">🚀 Proyección 2034</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">45.82%</div>
+          <div class="metric-label">📊 CAGR</div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <h3 style="text-align: center; color: var(--main-dark); margin-bottom: 24px;">📈 Crecimiento del Mercado (CAGR 45.82%)</h3>
+        <canvas id="tendenciasChart"></canvas>
+      </div>
+
+      <div class="info-cards">
+        <div class="info-card">
+          <h3>🔑 Tendencias Clave</h3>
+          <ul id="tendenciasClavesList" style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 12px;">🏢 Adopción masiva en empresas</li>
+            <li style="margin-bottom: 12px;">🤝 Sistemas multi-agente colaborativos</li>
+            <li style="margin-bottom: 12px;">🎯 Agentes especializados por dominio</li>
+            <li style="margin-bottom: 12px;">🌐 Integración con IoT y edge computing</li>
+            <li style="margin-bottom: 12px;">⚖️ Regulaciones y governance más estrictas</li>
+            <li style="margin-bottom: 12px;">🧠 Agentes con memoria a largo plazo</li>
+            <li style="margin-bottom: 12px;">🎭 Procesamiento multimodal avanzado</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h3>🎯 Impacto Esperado</h3>
+          <p style="margin-bottom: 16px;">El crecimiento exponencial de los agentes de IA transformará:</p>
+          <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 12px;">⚙️ Procesos empresariales automatizados</li>
+            <li style="margin-bottom: 12px;">👤 Experiencias de usuario personalizadas</li>
+            <li style="margin-bottom: 12px;">📊 Toma de decisiones basada en datos</li>
+            <li style="margin-bottom: 12px;">🔧 Optimización de recursos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <h3>🚀 Dashboard de Agentes de IA</h3>
+      <p>Una exploración completa del fascinante mundo de la inteligencia artificial y sus aplicaciones en el mundo real. Desde conceptos básicos hasta implementaciones avanzadas.</p>
+      <div class="footer-signature">
+        ✨ Creado con pasión por <span class="author">mherrad</span> ✨
+        <br>
+        <small style="opacity: 0.8; margin-top: 10px; display: block;">
+          © 2024 - Diseñado para inspirar y educar sobre el futuro de la IA
+        </small>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Datos de la aplicación
+    const appData = {
+      tiposAgentes: [
+        {
+          nombre: "Agente Reflejo Simple",
+          complejidad: "Baja",
+          autonomia: "Mínima",
+          memoria: false,
+          casoUso: "Termostatos, sensores simples",
+          descripcion: "Responde directamente a estímulos del entorno sin memoria de estados anteriores",
+          ventajas: ["Rápido", "Simple", "Confiable"],
+          desventajas: ["Sin memoria", "Limitado", "No adaptativo"]
+        },
+        {
+          nombre: "Agente Reflejo Basado en Modelo",
+          complejidad: "Media",
+          autonomia: "Baja",
+          memoria: true,
+          casoUso: "Robots de limpieza, sistemas de navegación",
+          descripcion: "Mantiene un modelo interno del mundo para tomar mejores decisiones",
+          ventajas: ["Memoria de estado", "Mejor navegación", "Más flexible"],
+          desventajas: ["Más complejo", "Mayor costo computacional", "Requiere modelado"]
+        },
+        {
+          nombre: "Agente Basado en Objetivos",
+          complejidad: "Media",
+          autonomia: "Media",
+          memoria: true,
+          casoUso: "Planificación de rutas, sistemas de recomendación",
+          descripcion: "Planifica acciones para alcanzar objetivos específicos",
+          ventajas: ["Orientado a objetivos", "Planificación", "Flexible"],
+          desventajas: ["Requiere definición clara de objetivos", "Computacionalmente intensivo", "Puede ser lento"]
+        },
+        {
+          nombre: "Agente Basado en Utilidad",
+          complejidad: "Alta",
+          autonomia: "Alta",
+          memoria: true,
+          casoUso: "Sistemas financieros, optimización de recursos",
+          descripcion: "Optimiza sus acciones basándose en una función de utilidad",
+          ventajas: ["Optimización", "Manejo de trade-offs", "Decisiones informadas"],
+          desventajas: ["Complejo", "Requiere función de utilidad bien definida", "Computacionalmente costoso"]
+        },
+        {
+          nombre: "Agente de Aprendizaje",
+          complejidad: "Muy Alta",
+          autonomia: "Muy Alta",
+          memoria: true,
+          casoUso: "Asistentes personales, sistemas adaptativos",
+          descripcion: "Aprende y mejora su comportamiento basándose en la experiencia",
+          ventajas: ["Adaptativo", "Mejora continua", "Aprendizaje automático"],
+          desventajas: ["Muy complejo", "Requiere grandes datasets", "Impredecible durante aprendizaje"]
+        }
+      ],
+      frameworks: [
+        {
+          nombre: "LangChain",
+          tipo: "Propósito General",
+          facilidadUso: 7,
+          flexibilidad: 9,
+          soporteEmpresarial: 8,
+          comunidad: 10,
+          documentacion: 9,
+          descripcion: "Framework más popular para construir aplicaciones con LLMs",
+          ventajas: ["Gran ecosistema", "Excelente documentación", "Comunidad activa"],
+          desventajas: ["Curva de aprendizaje", "Puede ser excesivo para proyectos simples"]
+        },
+        {
+          nombre: "AutoGen",
+          tipo: "Multi-Agente",
+          facilidadUso: 6,
+          flexibilidad: 8,
+          soporteEmpresarial: 7,
+          comunidad: 8,
+          documentacion: 7,
+          descripcion: "Framework de Microsoft para sistemas multi-agente",
+          ventajas: ["Conversaciones multi-agente", "Soporte de Microsoft", "Flexible"],
+          desventajas: ["Menos maduro", "Documentación limitada", "Curva de aprendizaje empinada"]
+        },
+        {
+          nombre: "CrewAI",
+          tipo: "Colaborativo",
+          facilidadUso: 9,
+          flexibilidad: 7,
+          soporteEmpresarial: 6,
+          comunidad: 7,
+          documentacion: 8,
+          descripcion: "Framework simple para agentes colaborativos",
+          ventajas: ["Muy fácil de usar", "Setup rápido", "Buena para prototipos"],
+          desventajas: ["Menos flexible", "Comunidad pequeña", "Funcionalidades limitadas"]
+        },
+        {
+          nombre: "Semantic Kernel",
+          tipo: "Empresarial",
+          facilidadUso: 7,
+          flexibilidad: 8,
+          soporteEmpresarial: 9,
+          comunidad: 6,
+          documentacion: 8,
+          descripcion: "Framework de Microsoft para aplicaciones empresariales",
+          ventajas: ["Orientado a empresa", "Seguridad robusta", "Integración con Azure"],
+          desventajas: ["Ecosistema limitado", "Menos community-driven", "Enfocado en Microsoft"]
+        }
+      ],
+      industrias: [
+        {
+          nombre: "Tecnología",
+          roi: "5-10x",
+          complejidad: "Media",
+          casosUso: [
+            "Desarrollo de código automatizado",
+            "Testing y QA automático",
+            "Gestión de infraestructura",
+            "Análisis de logs y debugging",
+            "Optimización de performance"
+          ],
+          ejemplos: [
+            "GitHub Copilot para programación",
+            "Sistemas de CI/CD inteligentes",
+            "Monitoreo predictivo de sistemas"
+          ]
+        },
+        {
+          nombre: "Marketing",
+          roi: "4-8x",
+          complejidad: "Media",
+          casosUso: [
+            "Análisis de audiencia automatizado",
+            "Generación de contenido personalizado",
+            "Optimización de campañas en tiempo real",
+            "Segmentación inteligente de clientes",
+            "Análisis de sentiment en redes sociales"
+          ],
+          ejemplos: [
+            "Jasper AI para contenido",
+            "Sistemas de email marketing inteligente",
+            "Optimización automática de anuncios"
+          ]
+        },
+        {
+          nombre: "Retail/E-commerce",
+          roi: "4-7x",
+          complejidad: "Media",
+          casosUso: [
+            "Recomendaciones personalizadas de productos",
+            "Gestión inteligente de inventario",
+            "Soporte al cliente 24/7",
+            "Análisis predictivo de demanda",
+            "Optimización de precios dinámicos"
+          ],
+          ejemplos: [
+            "Amazon recommendation engine",
+            "Chatbots de atención al cliente",
+            "Sistemas de predicción de inventario"
+          ]
+        },
+        {
+          nombre: "Servicios Financieros",
+          roi: "3-6x",
+          complejidad: "Alta",
+          casosUso: [
+            "Análisis de riesgo crediticio",
+            "Trading algorítmico automatizado",
+            "Detección de fraude en tiempo real",
+            "Atención al cliente personalizada",
+            "Cumplimiento normativo automatizado"
+          ],
+          ejemplos: [
+            "Sistemas de scoring crediticio",
+            "Bots de trading automatizado",
+            "Sistemas anti-fraude"
+          ]
+        }
+      ]
+    };
+
+    // Variables globales para el demo
+    let droppedComponents = [];
+    let draggedComponent = null;
+
+    // Navegación de pestañas
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(this.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Funciones del demo de PartyRock
+    function setupDragAndDrop() {
+      const components = document.querySelectorAll('.component-item');
+      const canvas = document.getElementById('demoCanvas');
+
+      components.forEach(component => {
+        component.addEventListener('dragstart', function(e) {
+          draggedComponent = this.dataset.component;
+          this.style.opacity = '0.5';
+        });
+
+        component.addEventListener('dragend', function(e) {
+          this.style.opacity = '1';
+        });
+      });
+
+      canvas.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.style.borderColor = '#ff9900';
+        this.style.backgroundColor = 'rgba(255,153,0,0.1)';
+      });
+
+      canvas.addEventListener('dragleave', function(e) {
+        this.style.borderColor = '#ccc';
+        this.style.backgroundColor = '';
+      });
+
+      canvas.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.style.borderColor = '#ccc';
+        this.style.backgroundColor = '';
+        
+        if (draggedComponent) {
+          addComponentToCanvas(draggedComponent);
+          draggedComponent = null;
+        }
+      });
+    }
+
+    function addComponentToCanvas(componentType) {
+      const canvas = document.getElementById('demoCanvas');
+      const placeholder = canvas.querySelector('.canvas-placeholder');
+      
+      if (placeholder) {
+        placeholder.remove();
+      }
+
+      const componentNames = {
+        'text-input': '📝 Entrada de Texto',
+        'ai-generator': '🤖 Generador IA',
+        'image-gen': '🎨 Generador Imagen',
+        'output': '📤 Salida'
+      };
+
+      const componentDiv = document.createElement('div');
+      componentDiv.className = 'dropped-component';
+      componentDiv.textContent = componentNames[componentType];
+      componentDiv.dataset.component = componentType;
+      
+      componentDiv.addEventListener('click', function() {
+        this.remove();
+        droppedComponents = droppedComponents.filter(c => c !== componentType);
+        if (canvas.children.length === 0) {
+          canvas.innerHTML = '<div class="canvas-placeholder">🎯 Arrastra componentes aquí para crear tu app<br><small>Ejemplo: Entrada de Texto → Generador IA → Salida</small></div>';
+        }
+      });
+
+      canvas.appendChild(componentDiv);
+      droppedComponents.push(componentType);
+    }
+
+    window.runDemo = function() {
+      const output = document.getElementById('demoOutput');
+      const outputContent = document.getElementById('outputContent');
+      
+      if (droppedComponents.length === 0) {
+        alert('🎯 Primero arrastra algunos componentes al canvas');
+        return;
+      }
+
+      output.style.display = 'block';
+      outputContent.innerHTML = '<div class="loading"></div> Procesando...';
+
+      setTimeout(() => {
+        const results = {
+          'text-input': 'Usuario ingresó: "Crea una historia sobre un robot"',
+          'ai-generator': 'IA generó: "Había una vez un robot llamado Zyx que soñaba con ser artista..."',
+          'image-gen': 'Imagen generada: [Robot pintando en un lienzo]',
+          'output': 'App completada: Historia + Imagen mostradas al usuario'
+        };
+
+        let resultText = '✨ Flujo ejecutado exitosamente:\n\n';
+        droppedComponents.forEach((comp, index) => {
+          resultText += `${index + 1}. ${results[comp]}\n`;
+        });
+
+        outputContent.textContent = resultText;
+      }, 2000);
+    };
+
+    window.clearDemo = function() {
+      const canvas = document.getElementById('demoCanvas');
+      const output = document.getElementById('demoOutput');
+      
+      canvas.innerHTML = '<div class="canvas-placeholder">🎯 Arrastra componentes aquí para crear tu app<br><small>Ejemplo: Entrada de Texto → Generador IA → Salida</small></div>';
+      output.style.display = 'none';
+      droppedComponents = [];
+    };
+
+    window.saveDemo = function() {
+      if (droppedComponents.length === 0) {
+        alert('🎯 No hay componentes para guardar');
+        return;
+      }
+      
+      const appConfig = {
+        components: droppedComponents,
+        timestamp: new Date().toISOString(),
+        name: `Mi App PartyRock ${Date.now()}`
+      };
+      
+      alert(`💾 App guardada: "${appConfig.name}"\n\nComponentes: ${droppedComponents.length}\n\n(En PartyRock real, esto se guardaría en tu cuenta)`);
+    };
+
+    // Renderizar agentes con interactividad mejorada
+    function renderAgents() {
+      const container = document.getElementById('agentsGrid');
+      container.innerHTML = `
+        <div class="card-grid">
+          ${appData.tiposAgentes.map((a, i) => `
+          <div class="card card-collapsible" data-index="${i}">
+            <span class="toggle-icon">▶</span>
+            <div class="card-title">${a.nombre}</div>
+            <div class="badges">
+              <span class="badge ${a.complejidad.toLowerCase()}">${a.complejidad}</span>
+              <span class="badge ${a.autonomia.toLowerCase()}">${a.autonomia}</span>
+              <span class="badge ${a.memoria ? 'si' : 'no'}">${a.memoria ? '🧠 Con memoria' : '🚫 Sin memoria'}</span>
+            </div>
+            <div style="margin-bottom: 12px; line-height: 1.6;">${a.descripcion}</div>
+            <div style="margin-bottom: 8px;"><b>💼 Caso de uso:</b> ${a.casoUso}</div>
+            <div class="card-details">
+              <hr style="margin:16px 0; border: 1px solid #e0e0e0;">
+              <div class="ventajas">
+                <h4>Ventajas</h4>
+                <ul>${a.ventajas.map((v, idx) => `<li style="--i: ${idx}">${v}</li>`).join('')}</ul>
+              </div>
+              <div class="desventajas">
+                <h4>Desventajas</h4>
+                <ul>${a.desventajas.map((d, idx) => `<li style="--i: ${idx}">${d}</li>`).join('')}</ul>
+              </div>
+            </div>
+            <div class="click-hint">
+              <span>✨ Click para ${i === 0 ? 'expandir' : 'ver detalles'}</span>
+            </div>
+          </div>
+          `).join('')}
+        </div>
+      `;
+
+      // Event listeners para tarjetas
+      document.querySelectorAll('.card-collapsible').forEach(card => {
+        card.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          // Cerrar otras tarjetas
+          document.querySelectorAll('.card-collapsible').forEach(c => {
+            if (c !== card && c.classList.contains('open')) {
+              c.classList.remove('open');
+              const otherIcon = c.querySelector('.toggle-icon');
+              const otherHint = c.querySelector('.click-hint span');
+              if (otherIcon) otherIcon.textContent = '▶';
+              if (otherHint) otherHint.textContent = '✨ Click para expandir';
+            }
+          });
+          
+          // Toggle tarjeta actual
+          const isOpen = card.classList.contains('open');
+          const icon = card.querySelector('.toggle-icon');
+          const hint = card.querySelector('.click-hint span');
+          
+          if (isOpen) {
+            card.classList.remove('open');
+            if (icon) icon.textContent = '▶';
+            if (hint) hint.textContent = '✨ Click para expandir';
+          } else {
+            card.classList.add('open');
+            if (icon) icon.textContent = '▼';
+            if (hint) hint.textContent = '✨ Click para contraer';
+          }
+        });
+      });
+    }
+
+    // Renderizar frameworks
+    function renderFrameworks() {
+      const container = document.getElementById('frameworksCards');
+      container.innerHTML = `
+        <div class="card-grid">
+          ${appData.frameworks.map(f => `
+          <div class="card">
+            <div class="card-title">${f.nombre}</div>
+            <div class="badges">
+              <span class="badge">${f.tipo}</span>
+            </div>
+            <div style="margin-bottom: 16px; line-height: 1.6;">${f.descripcion}</div>
+            
+            <div style="margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span>Facilidad de uso</span><span>${f.facilidadUso}/10</span>
+              </div>
+              <div style="background: #e0e0e0; height: 8px; border-radius: 4px; overflow: hidden;">
+                <div style="background: linear-gradient(90deg, #667eea, #764ba2); height: 100%; width: ${f.facilidadUso*10}%; transition: width 1s ease;"></div>
+              </div>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span>Flexibilidad</span><span>${f.flexibilidad}/10</span>
+              </div>
+              <div style="background: #e0e0e0; height: 8px; border-radius: 4px; overflow: hidden;">
+                <div style="background: linear-gradient(90deg, #764ba2, #f093fb); height: 100%; width: ${f.flexibilidad*10}%; transition: width 1s ease;"></div>
+              </div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span>Comunidad</span><span>${f.comunidad}/10</span>
+              </div>
+              <div style="background: #e0e0e0; height: 8px; border-radius: 4px; overflow: hidden;">
+                <div style="background: linear-gradient(90deg, #f093fb, #4caf50); height: 100%; width: ${f.comunidad*10}%; transition: width 1s ease;"></div>
+              </div>
+            </div>
+            <div class="ventajas" style="margin-bottom: 16px;">
+              <h4>Ventajas</h4>
+              <ul>${f.ventajas.map(v => `<li>${v}</li>`).join('')}</ul>
+            </div>
+            <div class="desventajas">
+              <h4>Desventajas</h4>
+              <ul>${f.desventajas.map(d => `<li>${d}</li>`).join('')}</ul>
+            </div>
+          </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // Renderizar industrias
+    function renderIndustries() {
+      const container = document.getElementById('industryCards');
+      container.innerHTML = appData.industrias.map(ind => `
+        <div class="card">
+          <div class="card-title" style="color: var(--main-dark);">${ind.nombre}</div>
+          <div class="badges" style="margin-bottom: 16px;">
+            <span class="badge" style="background: var(--success); color: white;">${ind.roi} ROI</span>
+            <span class="badge" style="background: var(--warning); color: white;">${ind.complejidad}</span>
+          </div>
+          <div style="margin-bottom: 16px;">
+            <h4 style="color: var(--main-dark); margin-bottom: 8px;">💼 Casos de uso:</h4>
+            <ul style="margin: 0; padding-left: 20px;">
+              ${ind.casosUso.map(c => `<li style="margin-bottom: 4px;">${c}</li>`).join('')}
+            </ul>
+          </div>
+          <div>
+            <h4 style="color: var(--main-dark); margin-bottom: 8px;">🌟 Ejemplos:</h4>
+            <ul style="margin: 0; padding-left: 20px;">
+              ${ind.ejemplos.map(e => `<li style="margin-bottom: 4px;">${e}</li>`).join('')}
+            </ul>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Calculadora ROI
+    window.calcularROI = function() {
+      const industry = document.getElementById('roiIndustry').value;
+      const investment = parseFloat(document.getElementById('roiInput').value);
+      const resultDiv = document.getElementById('roiResult');
+      const ind = appData.industrias.find(i => i.nombre === industry);
+
+      if (!ind || isNaN(investment) || investment <= 0) {
+        resultDiv.innerHTML = "⚠️ Introduce una inversión válida.";
+        resultDiv.style.display = 'block';
+        return;
+      }
+
+      const roiRange = ind.roi.replace('x','').split('-');
+      const minROI = parseFloat(roiRange[0]);
+      const maxROI = parseFloat(roiRange[1]);
+      const avgROI = (minROI + maxROI) / 2;
+      const estimatedReturn = investment * avgROI;
+      const profit = estimatedReturn - investment;
+
+      resultDiv.innerHTML = `
+        <div style="text-align: center;">
+          <h4 style="margin-top: 0; color: #1976d2;">📊 Resultados del Análisis</h4>
+          <p><b>💰 ROI promedio:</b> ${avgROI.toFixed(2)}x</p>
+          <p><b>📈 Retorno estimado:</b> €${estimatedReturn.toLocaleString()}</p>
+          <p><b>💎 Ganancia neta:</b> €${profit.toLocaleString()}</p>
+          <small style="color: #666;">*Estimación basada en datos de la industria</small>
+        </div>
+      `;
+      resultDiv.style.display = 'block';
+    }
+
+    // Sliders de métricas
+    function actualizarSlidersMetricas() {
+      const precisionSlider = document.getElementById('precisionSlider');
+      const tiempoSlider = document.getElementById('tiempoSlider');
+      const satisfaccionSlider = document.getElementById('satisfaccionSlider');
+      const precisionValue = document.getElementById('precisionValue');
+      const tiempoValue = document.getElementById('tiempoValue');
+      const satisfaccionValue = document.getElementById('satisfaccionValue');
+      const puntuacionGeneral = document.getElementById('puntuacionGeneral');
+
+      if (!precisionSlider) return;
+
+      function update() {
+        const precision = parseFloat(precisionSlider.value);
+        const tiempo = parseFloat(tiempoSlider.value);
+        const satisfaccion = parseFloat(satisfaccionSlider.value);
+
+        precisionValue.textContent = precision;
+        tiempoValue.textContent = tiempo;
+        satisfaccionValue.textContent = satisfaccion.toFixed(1);
+
+        const precisionScore = ((precision - 70) / 30) * 35;
+        const tiempoScore = (1 - (tiempo - 100) / 900) * 35;
+        const satisfaccionScore = ((satisfaccion - 3) / 2) * 30;
+
+        const total = Math.round(precisionScore + tiempoScore + satisfaccionScore);
+        puntuacionGeneral.textContent = total;
+
+        // Actualizar color del slider
+        precisionSlider.style.background = `linear-gradient(to right, #667eea ${(precision-70)/30*100}%, #e0e0e0 ${(precision-70)/30*100}%)`;
+        tiempoSlider.style.background = `linear-gradient(to right, #667eea ${(1-(tiempo-100)/900)*100}%, #e0e0e0 ${(1-(tiempo-100)/900)*100}%)`;
+        satisfaccionSlider.style.background = `linear-gradient(to right, #667eea ${((satisfaccion-3)/2)*100}%, #e0e0e0 ${((satisfaccion-3)/2)*100}%)`;
+      }
+
+      [precisionSlider, tiempoSlider, satisfaccionSlider].forEach(slider => {
+        slider.addEventListener('input', update);
+      });
+
+      update();
+    }
+
+    // Inicializar gráficos
+    document.addEventListener('DOMContentLoaded', function() {
+      // Gráfico hero
+      const ctx1 = document.getElementById('heroChart').getContext('2d');
+      new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+          labels: ['🤖 Agentes', '⚙️ Frameworks', '🏭 Industrias'],
+          datasets: [{
+            data: [5, 4, 4],
+            backgroundColor: ['#667eea', '#764ba2', '#f093fb'],
+            borderWidth: 3,
+            borderColor: '#fff'
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { position: 'bottom' },
+            title: { display: true, text: '🌟 Ecosistema de Agentes de IA', font: { size: 16 } }
+          },
+          cutout: '60%',
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+
+      // Gráfico Amazon Q
+      const ctx2 = document.getElementById('amazonQChart').getContext('2d');
+      new Chart(ctx2, {
+        type: 'radar',
+        data: {
+          labels: ['Facilidad de Uso', 'Integración AWS', 'Seguridad', 'Escalabilidad', 'Costo-Beneficio'],
+          datasets: [
+            {
+              label: 'Q Developer',
+              data: [8, 10, 9, 8, 7],
+              backgroundColor: 'rgba(255, 153, 0, 0.2)',
+              borderColor: '#ff9900',
+              pointBackgroundColor: '#ff9900'
+            },
+            {
+              label: 'Q Business',
+              data: [9, 10, 10, 9, 6],
+              backgroundColor: 'rgba(35, 47, 62, 0.2)',
+              borderColor: '#232f3e',
+              pointBackgroundColor: '#232f3e'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 10
+            }
+          }
+        }
+      });
+
+      // Gráfico Cedric
+      const ctx3 = document.getElementById('cedricChart').getContext('2d');
+      new Chart(ctx3, {
+        type: 'line',
+        data: {
+          labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+          datasets: [{
+            label: 'Adopción de Empleados (%)',
+            data: [15, 28, 45, 62, 78, 85],
+            borderColor: '#ff9900',
+            backgroundColor: 'rgba(255, 153, 0, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                callback: function(value) {
+                  return value + '%';
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // Gráfico PartyRock
+      const ctx4 = document.getElementById('partyrockChart').getContext('2d');
+      new Chart(ctx4, {
+        type: 'doughnut',
+        data: {
+          labels: ['🎵 Entretenimiento', '📚 Educación', '💼 Productividad', '🎨 Creatividad', '🤖 Chatbots'],
+          datasets: [{
+            data: [35, 25, 20, 15, 5],
+            backgroundColor: ['#ff9900', '#232f3e', '#667eea', '#f093fb', '#4caf50'],
+            borderWidth: 2,
+            borderColor: '#fff'
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { position: 'bottom' }
+          },
+          cutout: '50%',
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+
+      // Gráfico frameworks
+      const ctx5 = document.getElementById('frameworksChart').getContext('2d');
+      new Chart(ctx5, {
+        type: 'bar',
+        data: {
+          labels: appData.frameworks.map(f => f.nombre),
+          datasets: [
+            { label: 'Facilidad de uso', data: appData.frameworks.map(f => f.facilidadUso), backgroundColor: '#667eea' },
+            { label: 'Flexibilidad', data: appData.frameworks.map(f => f.flexibilidad), backgroundColor: '#764ba2' },
+            { label: 'Comunidad', data: appData.frameworks.map(f => f.comunidad), backgroundColor: '#f093fb' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top' } },
+          scales: { y: { beginAtZero: true, max: 10 } }
+        }
+      });
+
+      // Gráfico ROI
+      const ctx6 = document.getElementById('roiChart').getContext('2d');
+      const avgRois = appData.industrias.map(i => {
+        const r = i.roi.replace('x','').split('-').map(Number);
+        return (r[0]+r[1])/2;
+      });
+      
+      new Chart(ctx6, {
+        type: 'bar',
+        data: {
+          labels: appData.industrias.map(i => i.nombre),
+          datasets: [{
+            label: "ROI estimado (x)",
+            data: avgRois,
+            backgroundColor: ['#667eea','#764ba2','#f093fb','#4caf50'],
+            borderRadius: 8
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { x: { beginAtZero: true } }
+        }
+      });
+
+      // Gráfico tendencias
+      const ctx7 = document.getElementById('tendenciasChart').getContext('2d');
+      new Chart(ctx7, {
+        type: 'line',
+        data: {
+          labels: [2024,2025,2026,2027,2028,2029,2030,2031,2032,2033,2034],
+          datasets: [{
+            label: 'Tamaño del Mercado ($B)',
+            data: [5.43, 8.1, 12.1, 18.1, 27.1, 40.6, 52.62, 80, 120, 180, 236.03],
+            borderColor: '#667eea',
+            backgroundColor: 'rgba(102,126,234,0.1)',
+            tension: 0.4,
+            pointRadius: 6,
+            pointBackgroundColor: '#667eea',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { title: { display: true, text: 'Año' } },
+            y: { title: { display: true, text: 'Tamaño ($B)' }, beginAtZero: true }
+          }
+        }
+      });
+
+      // Inicializar contenido
+      renderAgents();
+      renderFrameworks();
+      renderIndustries();
+      actualizarSlidersMetricas();
+      setupDragAndDrop();
+    });
+  </script>
+</body>
+</html>
